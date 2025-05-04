@@ -5,7 +5,7 @@ import os
 
 from cryptography.fernet import Fernet
 from dotenv import load_dotenv
-from sqlmodel import Field, Relationship, SQLModel
+from sqlmodel import Column, DateTime, Field, Relationship, SQLModel
 from uuid import UUID, uuid4
 
 load_dotenv()
@@ -55,9 +55,11 @@ class Note(SQLModel, table=True):
     title: str = Field(max_length=256, nullable=False)
     details_encrypted: str = Field(max_length=4096, nullable=False)
     created_at: datetime = Field(
-        default_factory=datetime_now_utc, nullable=False)
+        default_factory=datetime_now_utc,
+        sa_column=Column(DateTime(timezone=True)))
     updated_at: datetime = Field(
-        default_factory=datetime_now_utc, nullable=False)
+        default_factory=datetime_now_utc,
+        sa_column=Column(DateTime(timezone=True)))
 
     # Relationships
     user_links: List["NoteUserLink"] = Relationship(

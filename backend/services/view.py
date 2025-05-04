@@ -16,8 +16,12 @@ def view_service(object_type: ObjectType, object_id: UUID, user: User):
 
     link = storage.get("link", note_id=object_id, user_id=user.id)
 
-    if target_object == user or link:
+    if target_object == user:
         return target_object.to_dict()
+    elif link:
+        note_dict = target_object.to_dict()
+        note_dict["relationship"] = link.role
+        return note_dict
     raise HTTPException(
         status_code=403,
         detail="You do not have permission to view this object"

@@ -1,24 +1,24 @@
-from pydantic import BaseModel, ConfigDict, EmailStr
+from pydantic import BaseModel, ConfigDict, EmailStr, Field
 from uuid import UUID
 
 
 class UserSchema(BaseModel):
     model_config = ConfigDict(extra='ignore')
 
-    email: EmailStr
-    password: str
-    username: str
+    email: EmailStr = Field(..., max_length=50)
+    password: str = Field(..., max_length=32)
+    username: str = Field(..., max_length=50)
 
 
 class EditorSchema(BaseModel):
     model_config = ConfigDict(extra='ignore')
 
     note_id: UUID
-    username: str
+    username: str = Field(..., max_length=50)
 
 
 class ObserverSchema(BaseModel):
     model_config = ConfigDict(extra='ignore')
 
     note_id: UUID
-    username: str
+    username: str = Field(..., max_length=50)

@@ -1,7 +1,7 @@
 from fastapi import HTTPException
 
 from models import storage
-from models.note import UserRole
+from models.note import datetime_now_utc, UserRole
 from models.user import User
 from schemas.update import UpdateSchema
 
@@ -47,10 +47,10 @@ def update_service(update: UpdateSchema, user: User):
                 )
 
         for key, value in request_dict.items():
-            # if key == "password":
-            #     target_object.password = value
-            # else:
             setattr(target_object, key, value)
+
+        if hasattr(target_object, "updated_at"):
+            target_object.updated_at = datetime_now_utc()
 
         storage.new(target_object)
         storage.save()

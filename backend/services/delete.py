@@ -1,22 +1,12 @@
 from fastapi import HTTPException
+from uuid import UUID
 
 from models import storage
 from models.user import User
-from schemas.delete import DeleteSchema
+from schemas.view import ObjectType
 
 
-def delete_service(delete: DeleteSchema, user: User):
-    request_dict = delete.model_dump(mode="python", exclude_none=True)
-
-    object_type = request_dict.pop("object_type", None)
-    object_id = request_dict.pop("object_id", None)
-
-    if not object_type or not object_id:
-        raise HTTPException(
-            status_code=400,
-            detail="object_type and object_id must be provided"
-        )
-
+def delete_service(object_type: ObjectType, object_id: UUID, user: User):
     target_object = storage.get(object_type, id=object_id)
 
     if not target_object:

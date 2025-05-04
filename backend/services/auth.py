@@ -76,6 +76,8 @@ def generate_tokens(response: JSONResponse, user: User, user_session: UserSessio
 
     access_token = create_access_token(user_session.id, user.id)
     refresh_token = create_refresh_token(user_session.id, user.id)
+    response.delete_cookie("access_token")
+    response.delete_cookie("refresh_token", "/auth/")
     response.set_cookie(
         key="access_token",
         value=f"bearer {access_token}",

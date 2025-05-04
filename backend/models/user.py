@@ -61,7 +61,9 @@ class User(SQLModel, table=True):
             "id": str(self.id),
             "email": self.email,
             "username": self.username,
-            "owner_notes": owner_notes,
-            "observer_notes": observer_notes,
-            "editor_notes": editor_notes
+            "notes": {
+                "editor": editor_notes,
+                "observer": observer_notes,
+                "owner": owner_notes,
+            }
         }
