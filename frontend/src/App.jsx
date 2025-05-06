@@ -24,21 +24,25 @@ function App() {
                 const parsedUser = JSON.parse(localUserData);
                 const userId = parsedUser.id;
 
-                const response = await fetchWithAuth(`http://localhost:8000/view/user/${userId}`, {
-                    method: 'GET',
-                });
+                try {
+                    const response = await fetchWithAuth(`http://localhost:8000/view/user/${userId}`, {
+                        method: 'GET',
+                    });
 
-                if (!response.ok) {
-                    throw new Error('Failed to fetch user data');
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch user data');
+                    }
+
+                    const updatedUser = await response.json();
+
+                    // Update localStorage and state
+                    localStorage.setItem('user', JSON.stringify(updatedUser));
+                    setUser(updatedUser);
+                    setNotes(updatedUser.notes || []);
+                    setLoading(false);
+                } catch (error) {
+                    navigate('/login')
                 }
-
-                const updatedUser = await response.json();
-
-                // Update localStorage and state
-                localStorage.setItem('user', JSON.stringify(updatedUser));
-                setUser(updatedUser);
-                setNotes(updatedUser.notes || []);
-                setLoading(false);
             } catch (error) {
                 console.error('Error syncing user:', error);
                 navigate('/login'); // Optional fallback
@@ -46,7 +50,7 @@ function App() {
         };
 
         fetchAndSyncUser();
-    }, [navigate]);
+    }, []);
 
     const handleLogout = async () => {
         try {
@@ -64,6 +68,7 @@ function App() {
             }
         } catch (error) {
             console.error('Logout error:', error);
+            navigate('/login')
         }
     };
 
@@ -102,6 +107,7 @@ function App() {
             }
         } catch (error) {
             console.error('Create note failed:', error);
+            navigate('/login')
         }
     };
 
